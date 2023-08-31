@@ -1,11 +1,11 @@
-let posts;
-(async () => {
-
-    const res = await fetch("http://localhost:3000/posts");
+const loadPosts = async (page = 0) => {
+    const postPerLoad = 500
+    const res = await fetch(`http://localhost:3000/posts?&_page=${page}&_limit=${postPerLoad}&_sort=publishedOn&_order=asc`);
     posts = await res.json();
 
     //empty html
-    postBody.innerHTML = ""
+    if (page == 0)
+        postBody.innerHTML = ""
 
     //show only 10 post
     posts.splice(10)
@@ -40,4 +40,6 @@ let posts;
         postBody.appendChild(div)
 
     });
-})()
+}
+
+loadPosts()

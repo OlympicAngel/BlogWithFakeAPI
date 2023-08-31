@@ -6,9 +6,8 @@ function generateData() {
     const comments = []
     const photos = []
 
-    let index = 0
-
-    for (index = 1; index <= 11; index++) {
+    //gen users
+    for (let index = 1; index <= 10; index++) {
         const fullname = faker.person.fullName()
         const username = faker.internet.userName()
         const email = faker.internet.email()
@@ -27,33 +26,32 @@ function generateData() {
         users.push(user)
 
     }
-
-    let cnt = 1;
-    while (cnt <= 100) {
+    //gen posts
+    for (let index = 1; index <= 100; index++) {
         const title = faker.lorem.sentence()
         const body = faker.lorem.sentences(2, '\n')
-        const userId = getRandomUserId()
-        const publishedOn = faker.date.anytime()
+        const userId = getRandom(users)
+        const publishedOn = faker.date.past()
+        const image = faker.image.urlLoremFlickr({ width: 128, height: 128 })
 
         const post = {
-            id: cnt,
+            id: index,
             title,
             body,
             userId,
-            publishedOn
+            publishedOn,
+            image
         }
 
         posts.push(post)
-
-        cnt++
     }
 
-
+    //gen comments
     for (index = 1; index <= 50; index++) {
         const name = faker.person.fullName()
         const email = faker.internet.email()
         const body = faker.lorem.sentences(2, '\n')
-        const postId = getRandomPostId()
+        const postId = getRandom(posts)
 
         const comment = {
             "id": index,
@@ -62,17 +60,14 @@ function generateData() {
             email,
             body
         }
-
         comments.push(comment)
-
     }
-
+    //gen images?
     for (index = 1; index <= 50; index++) {
-
         const title = faker.lorem.sentence()
         const url = faker.image.urlLoremFlickr({ width: 400, height: 400 })
         const thumbnailUrl = faker.image.urlLoremFlickr({ width: 128, height: 128 })
-        const postId = getRandomPostId()
+        const postId = getRandom(posts)
 
         const photo = {
             "id": index,
@@ -85,24 +80,14 @@ function generateData() {
         photos.push(photo)
 
     }
-
-
-    function getRandomUserId() {
-        // return faker.number.int({ min: 1, max: 11 })
-        // return Math.ceil(Math.random() * users.length)
-        return users[Math.ceil(Math.random() * users.length)]?.id
-    }
-
-    function getRandomPostId() {
-        // return faker.number.int({ min: 1, max: 11 })
-        // return Math.ceil(Math.random() * users.length)
-        return posts[Math.ceil(Math.random() * posts.length)]?.id
-    }
-
-
     return { "users": users, "posts": posts, "comments": comments, "photos": photos }
-
 }
 
+function getRandom(array, field = "id") {
+    const rndITem = array[~~(Math.random() * array.length)]
+    if (rndITem && filed)
+        return rndITem[field]
+    return field;
+}
 
 module.exports = generateData
