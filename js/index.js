@@ -25,9 +25,9 @@ const loadPosts = async () => {
                             <image src="${post.image}" class="container-fluid" alt="${post.title} by ${post?.user?.name || "unknown"}">
                         </div>
                         <div class="col col-12 col-md-9">
-                            <a href="post.html?">
+                            <a href="post.html?id=${post.id}">
                                 <h2 class="post-title">${post.title}</h2>
-                                <h3 class="post-subtitle">${post.body.split("\n")[0]}..</h3>
+                                <h3 class="post-subtitle">${post.body.split("\n")[0].substring(0, 60)}..</h3>
                             </a>
                             <p class="post-meta">
                                 פורסם על ידי
