@@ -28,11 +28,14 @@ function generateData() {
     }
     //gen posts
     for (let index = 1; index <= 100; index++) {
-        const title = faker.lorem.sentence()
-        const body = faker.lorem.sentences(2, '\n')
-        const userId = getRandom(users)
-        const publishedOn = faker.date.past()
-        const image = faker.image.urlLoremFlickr({ width: 128, height: 128 })
+        const title = faker.lorem.sentence();
+        let body = faker.lorem.paragraphs({ min: 5, max: 15 }, '\n');
+        const sentences = body.split("\n");
+        body = sentences.map((sent, index) => (Math.random() < (index % 6 / 5) ** 2) ? sent + "\n" : sent).join("\n")
+
+        const userId = getRandom(users);
+        const publishedOn = faker.date.past();
+        const image = faker.image.urlLoremFlickr({ width: 300, height: 300 });
 
         const post = {
             id: index,
@@ -47,7 +50,7 @@ function generateData() {
     }
 
     //gen comments
-    for (index = 1; index <= 50; index++) {
+    for (index = 1; index <= 300; index++) {
         const name = faker.person.fullName()
         const email = faker.internet.email()
         const body = faker.lorem.sentences(2, '\n')
