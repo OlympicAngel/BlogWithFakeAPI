@@ -1,23 +1,17 @@
-const loadPosts = async (page = 0) => {
-    const postPerLoad = 500
-    const res = await fetch(`http://localhost:3000/posts?&_page=${page}&_limit=${postPerLoad}&_sort=publishedOn&_order=asc`);
+/**@type {HTMLDivElement} */
+let lastPostDiv;
+let page = 1;
+const loadPosts = async () => {
+    const postPerLoad = 5
+    const res = await fetch(`http://localhost:3000/posts?&_page=${page}&_limit=${postPerLoad}&_sort=publishedOn&_order=asc&_expand=user`);
     posts = await res.json();
 
     //empty html
-    if (page == 0)
+    if (page <= 1)
         postBody.innerHTML = ""
 
-    //show only 10 post
-    posts.splice(10)
 
-    posts.forEach(async post => {
-        if (post.userId == undefined)
-            return console.log("post with no user id?", post)
-
-        //get auther user data
-        const userFetch_res = await fetch("http://localhost:3000/users/" + post.userId);
-        const userFetch = await userFetch_res.json();
-
+    for (let post of posts) {
         //convert time stamp
         const monthNames = ["ינואר", "בפרואר", "מרץ", "אפריל", "מאי", "יוני",
             "יולי", "אוגוסט", "ספטמבר", "אוקטובר", "נובמבר", "דצמבר"];
@@ -34,12 +28,39 @@ const loadPosts = async (page = 0) => {
                         </a>
                         <p class="post-meta">
                             פורסם על ידי
-                            <a href="#!">${userFetch.name || "unknown"}</a>
+                            <a href="#!">${post?.user?.name || "unknown"}</a>
                             בתאריך ${formatedDate}
                         </p>`
-        postBody.appendChild(div)
-
-    });
+        postBody.appendChild(div);
+    }
+    lastPostDiv = postBody.lastChild;
 }
 
 loadPosts()
+
+document.body.onscroll = async (e) => {
+    if (!lastPostDiv)
+        return;
+    if (window.innerHeight + window.scrollY >= lastPostDiv.offsetTop + lastPostDiv.offsetHeight) {
+        lastPostDiv = undefined; //nullify the last post - blocking from the user to trigger scroll even more
+
+        //temp lock scroll updates for 1H
+        lastScrollLoad = Date.now() + 1000 * 60 * 60;
+
+        //add loading animation
+        const loadingIcon = document.createElement("i");
+        loadingIcon.className = "fa-solid fa-spinner fa-spin-pulse"
+        loadingIcon.style = `font-size: 3em; margin: auto; display: block;`
+        postBody.appendChild(loadingIcon);
+
+        await sleep(500) //let the loading animation run to the user
+
+        page++; //loading next page of posts
+        await loadPosts() //API & page update (also sets `lastPostDiv`)
+
+        postBody.querySelector("& > .fa-spin-pulse")?.remove();//removes the loading animation
+
+    }
+}
+
+const sleep = (ms) => new Promise(res => setTimeout(res, ms))

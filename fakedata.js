@@ -85,7 +85,7 @@ function generateData() {
 
 function getRandom(array, field = "id") {
     const rndITem = array[~~(Math.random() * array.length)]
-    if (rndITem && filed)
+    if (rndITem && field)
         return rndITem[field]
     return field;
 }
