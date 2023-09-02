@@ -20,17 +20,21 @@ const loadPosts = async () => {
 
         //html structure
         const div = document.createElement("div");
-        div.className = "post-preview";
-        div.innerHTML = `
-                        <a href="post.html">
-                            <h2 class="post-title">${post.title}</h2>
-                            <h3 class="post-subtitle">${post.body.split("\n")[0]}..</h3>
-                        </a>
-                        <p class="post-meta">
-                            פורסם על ידי
-                            <a href="#!">${post?.user?.name || "unknown"}</a>
-                            בתאריך ${formatedDate}
-                        </p>`
+        div.className = "post-preview row";
+        div.innerHTML = `<div class="col col-12 col-md-3">
+                            <image src="${post.image}" class="container-fluid" alt="${post.title} by ${post?.user?.name || "unknown"}">
+                        </div>
+                        <div class="col col-12 col-md-9">
+                            <a href="post.html?">
+                                <h2 class="post-title">${post.title}</h2>
+                                <h3 class="post-subtitle">${post.body.split("\n")[0]}..</h3>
+                            </a>
+                            <p class="post-meta">
+                                פורסם על ידי
+                                <a href="#!">${post?.user?.name || "unknown"}</a>
+                                בתאריך ${formatedDate}
+                            </p>
+                        </div>`
         postBody.appendChild(div);
     }
     lastPostDiv = postBody.lastChild;
