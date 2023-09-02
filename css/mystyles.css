@@ -1,3 +1,7 @@
-h2.post-title{
+h2.post-title {
     color: rgb(31, 130, 200);
+}
+
+body {
+    direction: rtl;
 }
